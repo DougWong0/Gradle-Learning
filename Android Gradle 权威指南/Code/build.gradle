@@ -1,0 +1,56 @@
+
+
+//////////////////////-------->>>>>>闭包委托
+class Delegate {
+    def method1() {
+        println "Delegate this: ${this.getClass()} in Delegate"
+	println "method1 in Delegate"
+    }
+
+    def test(Closure<Delegate> closure){
+        closure(this)
+    }
+}
+
+def method1(){
+    println "Delegate this: ${this.getClass()} in root"
+    println "method1 in root"
+}
+
+task helloDelegate << {
+	println "Root this : ${this.getClass()}"
+	
+    new Delegate().test{
+        println "thisObject:${thisObject.getClass()}"
+		println "owner:${owner.getClass()}"
+		println "delegate:${delegate.getClass()}"
+		method1()
+		it.method1()
+    }
+} 
+
+
+
+
+
+
+
+
+// 测试代码
+task printMain << {
+    println "Main Class"
+}
+
+task helloClosure << {
+	// 使用自己的闭包
+	customEach{
+		println it
+	}
+}
+// 定义自己的each
+def customEach(closure) {
+	// 模拟一个10个元素的集合, 开始迭代
+	for (int i in 1..10){
+		closure(i)
+	}
+}
